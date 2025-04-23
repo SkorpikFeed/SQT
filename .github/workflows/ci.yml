@@ -54,6 +54,8 @@ jobs:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           reporter: github-pr-review
           level: info
+      - name: Install Java 17
+        run: sudo apt-get update && sudo apt-get install -y openjdk-17-jdk
       - name: Run SonarQube analysis
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
