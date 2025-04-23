@@ -31,6 +31,18 @@ jobs:
           sudo apt-get install -y cloc
           cloc src/ > cloc-report.txt
           cat cloc-report.txt
+      - name: Запуск flake8 через Reviewdog
+        uses: reviewdog/action-flake8@v2
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          reporter: github-pr-review
+          level: error
+      - name: Запуск Black через Reviewdog
+        uses: reviewdog/action-black@v1
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          reporter: github-pr-review
+          level: info
       - name: Run SonarQube analysis
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
