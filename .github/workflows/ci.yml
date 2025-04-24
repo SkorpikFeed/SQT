@@ -25,8 +25,17 @@ jobs:
         run: |
           pip install -r requirements.txt
           pip install -e .
-      - name: Run tests
-        run: pytest --junitxml=report.xml
+      - name: Run tests with coverage
+        run: |
+          pytest --cov=src --cov-report=xml:coverage.xml --junitxml=report.xml
+      - name: Upload coverage reports
+        uses: actions/upload-artifact@v3
+        with:
+          name: coverage-reports
+          path: |
+            coverage.xml
+            report.xml
+          retention-days: 1
 
   analysis:
     runs-on: ubuntu-latest
@@ -36,6 +45,10 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
+      - name: Download coverage reports
+        uses: actions/download-artifact@v3
+        with:
+          name: coverage-reports
       - name: Count lines of code with Cloc
         run: |
           sudo apt-get install -y cloc
@@ -79,8 +92,13 @@ jobs:
           # Make the explicit connection between sonar-scanner and the Java installation
           echo "sonar.scanner.java.home=$JAVA_HOME" >> sonar-scanner-4.8.0.2856-linux/conf/sonar-scanner.properties
           
+          # List the coverage report to confirm it exists
+          ls -la coverage.xml
+          
           export PATH=$PATH:$(pwd)/sonar-scanner-4.8.0.2856-linux/bin
-          sonar-scanner -Dsonar.java.binaries=.
+          sonar-scanner \
+            -Dsonar.java.binaries=. \
+            -Dsonar.python.coverage.reportPaths=coverage.xml
 
   review-check:
     runs-on: ubuntu-latest
