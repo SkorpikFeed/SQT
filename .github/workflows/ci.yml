@@ -29,7 +29,7 @@ jobs:
         run: |
           pytest --cov=src --cov-report=xml:coverage.xml --junitxml=report.xml
       - name: Upload coverage reports
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: coverage-reports
           path: |
@@ -82,19 +82,19 @@ jobs:
           echo "Using Java version:"
           java -version
           echo "Java home is: $JAVA_HOME"
-          
+
           # Remove bundled JRE to force using system Java
           rm -rf sonar-scanner-4.8.0.2856-linux/jre
-          
+
           # Modify the sonar-scanner script to find Java properly
           sed -i 's/use_embedded_jre=true/use_embedded_jre=false/g' sonar-scanner-4.8.0.2856-linux/bin/sonar-scanner
-          
+
           # Make the explicit connection between sonar-scanner and the Java installation
           echo "sonar.scanner.java.home=$JAVA_HOME" >> sonar-scanner-4.8.0.2856-linux/conf/sonar-scanner.properties
-          
+
           # List the coverage report to confirm it exists
           ls -la coverage.xml
-          
+
           export PATH=$PATH:$(pwd)/sonar-scanner-4.8.0.2856-linux/bin
           sonar-scanner \
             -Dsonar.java.binaries=. \
