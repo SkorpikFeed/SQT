@@ -109,6 +109,15 @@ jobs:
         with:
           script: |
             const prNumber = context.payload.pull_request.number;
+
+            const bypassUsers = ['SkorpikFeed'];
+
+            // Skip check if PR author is in the bypass list
+            if (bypassUsers.includes(prAuthor)) {
+              console.log('PR author is in the bypass list. Skipping code review check.');
+              return;
+            }
+
             const {data: reviews} = await github.rest.pulls.listReviews({
               owner: context.repo.owner,
               repo: context.repo.repo,
