@@ -1,5 +1,5 @@
 import unittest
-from src.main import add, subtract, multiply, divide
+from src.main import add, subtract, multiply, divide, power
 
 class TestMathFunctions(unittest.TestCase):
     def test_add(self):
@@ -19,6 +19,11 @@ class TestMathFunctions(unittest.TestCase):
         self.assertEqual(divide(1, 1), 1)
         with self.assertRaises(ValueError):
             divide(1, 0)
+
+    def test_power(self):
+        self.assertEqual(power(2, 3), 8)
+        self.assertEqual(power(5, 0), 1)
+        self.assertEqual(power(2, -1), 0.5)
 
 if __name__ == '__main__':
     unittest.main()
